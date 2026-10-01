@@ -198,20 +198,60 @@ st.markdown(
 )
 
 # ---------------------------------------------------------
-# CARGA DE MODELO CACHEADA
+# CARGA DE MODELO ROBUSTA (Soporta .h5 y .keras)
 # ---------------------------------------------------------
 @st.cache_resource
 def load_mnist_model():
-    model_files = ['mnist_model.keras', 'mnist_model.h5']
-    for model_path in model_files:
-        if os.path.exists(model_path):
-            try:
-                return keras.models.load_model(model_path), model_path
-            except Exception:
-                continue
-    return None, None
+    """
+    Localiza y carga el modelo buscando en la ruta absoluta del script.
+    Usa compile=False para evitar incompatibilidades de optimizador entre Colab y local.
+    """
+    # Directorio base donde está alojado este archivo .py
+    base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in locals() else os.getcwd()
+    
+    # 1. Candidatos prioritarios
+    candidates = [
+        os.path.join(base_dir, "mnist_model.h5"),
+        os.path.join(base_dir, "mnist_model.keras"),
+        os.path.join(os.getcwd(), "mnist_model.h5"),
+        os.path.join(os.getcwd(), "mnist_model.keras"),
+    ]
 
-model, loaded_path = load_mnist_model()
+    # 2. Búsqueda automática de cualquier otro .h5 o .keras en el directorio si no coinciden los nombres
+    for root_path in [base_dir, os.getcwd()]:
+        if os.path.exists(root_path):
+            for file in os.listdir(root_path):
+                if file.endswith((".h5", ".keras")):
+                    full_p = os.path.join(root_path, file)
+                    if full_p not in candidates:
+                        candidates.append(full_p)
+
+    errors = []
+
+    for path in candidates:
+        if os.path.exists(path):
+            # Intento 1: Con compile=False (evita errores de optimizadores entre versiones de Keras)
+            try:
+                loaded_model = keras.models.load_model(path, compile=False)
+                return loaded_model, path, None
+            except Exception as e1:
+                # Intento 2: Carga estándar por si el modelo necesita compilarse
+                try:
+                    loaded_model = keras.models.load_model(path)
+                    return loaded_model, path, None
+                except Exception as e2:
+                    errors.append(f"Fallo al cargar `{os.path.basename(path)}`: {str(e1)}")
+
+    # Si se encontraron archivos pero todos fallaron
+    if errors:
+        return None, None, "\\n".join(errors)
+
+    # Si de verdad no existe ningún archivo
+    files_in_dir = os.listdir(base_dir) if os.path.exists(base_dir) else []
+    return None, None, f"No se encontró ningún archivo .h5 o .keras en: `{base_dir}`.\\nArchivos visibles: {files_in_dir}"
+
+
+model, loaded_path, load_error = load_mnist_model()
 
 # ---------------------------------------------------------
 # SIDEBAR INFORMATIVA
