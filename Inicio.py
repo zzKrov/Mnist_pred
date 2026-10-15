@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# ESTILOS VISUALES LIMPIOS (SIN RECUADROS SECUNDARIOS DE FONDO)
+# LÍNEA BASE VISUAL: GRADIENTES DE CARBONO, FLUIDOS Y TRAZO ANIMADO DEL "3"
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -28,9 +28,64 @@ st.markdown(
         background-color: #050507 !important;
         color: #f4f4f5 !important;
         font-family: 'Inter', -apple-system, sans-serif !important;
+        overflow-x: hidden;
     }
 
-    #MainMenu, footer, header { visibility: hidden; }
+    [data-testid="stHeader"] { background: transparent !important; }
+
+    /* 1. Fondo de gradiente continuo de carbono */
+    .stApp {
+        background: linear-gradient(135deg, #050507 0%, #0d0d12 30%, #15151c 60%, #060608 100%) !important;
+        background-size: 300% 300% !important;
+        animation: carbonShift 18s ease infinite alternate !important;
+    }
+
+    @keyframes carbonShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* 2. Esferas orgánicas fluidas de tono platino */
+    .fluid-carbon-1 {
+        position: fixed;
+        top: 15%;
+        left: -120px;
+        width: 520px;
+        height: 520px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(113, 113, 122, 0.03) 60%, transparent 75%);
+        border-radius: 40% 60% 70% 30% / 50% 60% 40% 50%;
+        filter: blur(85px);
+        animation: carbonDrift1 22s infinite alternate ease-in-out;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .fluid-carbon-2 {
+        position: fixed;
+        bottom: 5%;
+        right: -100px;
+        width: 560px;
+        height: 560px;
+        background: radial-gradient(circle, rgba(161, 161, 170, 0.06) 0%, rgba(255, 255, 255, 0.02) 60%, transparent 75%);
+        border-radius: 60% 40% 50% 50% / 40% 50% 60% 50%;
+        filter: blur(90px);
+        animation: carbonDrift2 25s infinite alternate ease-in-out;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes carbonDrift1 {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(120px, 70px) scale(1.15); }
+        100% { transform: translate(40px, 140px) scale(0.95); }
+    }
+
+    @keyframes carbonDrift2 {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-100px, -70px) scale(1.2); }
+        100% { transform: translate(-30px, -120px) scale(0.9); }
+    }
 
     .brand-signature {
         text-align: center;
@@ -44,16 +99,52 @@ st.markdown(
 
     .title {
         text-align: center;
-        font-size: 1.7rem;
+        font-size: 1.8rem;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #fafafa;
         margin-top: 0.2rem;
         margin-bottom: 0.8rem;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
-    /* Supresión de contenedores secundarios o cuadrados grises detrás del canvas */
+    /* RESTAURACIÓN DEL NÚMERO 3 ANIMADO */
+    .guide-chip {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        margin: 0 auto 1.4rem auto;
+        padding: 8px 18px;
+        background: rgba(13, 13, 16, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        width: fit-content;
+        font-size: 0.82rem;
+        color: #a1a1aa;
+        backdrop-filter: blur(10px);
+    }
+
+    .stroke-demo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .animated-digit-3 {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: traceThree 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes traceThree {
+        0% { stroke-dashoffset: 100; opacity: 0.2; }
+        40% { stroke-dashoffset: 0; opacity: 1; }
+        80% { stroke-dashoffset: 0; opacity: 1; }
+        100% { stroke-dashoffset: 100; opacity: 0.2; }
+    }
+
+    /* CENTRADO PERFECTO DEL LIENZO SIN MARCOS ANIDADOS */
     div[data-testid="stCanvas"] {
         display: flex !important;
         justify-content: center !important;
@@ -68,30 +159,16 @@ st.markdown(
     }
 
     div[data-testid="stCanvas"] canvas {
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
-        border-radius: 6px !important;
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95), 0 0 15px rgba(255, 255, 255, 0.04) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.95), 0 0 25px rgba(255, 255, 255, 0.06) !important;
         background-color: #000000 !important;
-        transition: border-color 0.25s ease !important;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
     }
 
     div[data-testid="stCanvas"] canvas:hover {
-        border-color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    .guide-chip {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1.5rem;
-        margin: 0 auto 1.2rem auto;
-        padding: 6px 14px;
-        background: #0d0d10;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 4px;
-        width: fit-content;
-        font-size: 0.8rem;
-        color: #a1a1aa;
+        border-color: rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 0 12px 45px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.12) !important;
     }
 
     div.stButton > button {
@@ -105,11 +182,12 @@ st.markdown(
     }
 
     .stat-card {
-        background: #0d0d11;
+        background: rgba(13, 13, 17, 0.85);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 4px;
+        border-radius: 6px;
         padding: 1rem;
         text-align: center;
+        backdrop-filter: blur(10px);
     }
     .stat-label {
         font-size: 0.7rem;
@@ -126,6 +204,9 @@ st.markdown(
         line-height: 1;
     }
     </style>
+
+    <div class="fluid-carbon-1"></div>
+    <div class="fluid-carbon-2"></div>
     """,
     unsafe_allow_html=True
 )
@@ -165,9 +246,15 @@ model, filename, load_err = load_network()
 st.markdown('<div class="brand-signature">Krov Industries · Reconocimiento Óptico</div>', unsafe_allow_html=True)
 st.markdown('<div class="title">Reconocedor de Dígitos</div>', unsafe_allow_html=True)
 
+# -----------------------------------------------------------------------------
+# NÚMERO 3 ANIMADO COMO GUÍA VISUAL
+# -----------------------------------------------------------------------------
 st.markdown(
     """
     <div class="guide-chip">
+        <svg class="stroke-demo" viewBox="0 0 40 40" fill="none">
+            <path class="animated-digit-3" d="M 12 10 C 24 10, 24 20, 14 20 C 26 20, 26 32, 10 32" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
         <span>1. Dibuja un dígito centrado (0 al 9)</span>
         <span style="color:#3f3f46;">→</span>
         <span>2. Pulsa Analizar Trazo</span>
@@ -177,9 +264,9 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# LIENZO CENTRADO
+# LIENZO CENTRADO SIN RECORTAR DIMENSIONES (640x340px)
 # -----------------------------------------------------------------------------
-_, col_canvas, _ = st.columns([1, 4, 1])
+_, col_canvas, _ = st.columns([1, 4.5, 1])
 
 with col_canvas:
     canvas_data = st_canvas(
@@ -187,8 +274,8 @@ with col_canvas:
         stroke_width=20,
         stroke_color="#ffffff",
         background_color="#000000",
-        width=580,
-        height=320,
+        width=640,
+        height=340,
         drawing_mode="freedraw",
         key="digit_canvas",
     )
