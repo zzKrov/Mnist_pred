@@ -8,17 +8,17 @@ import tensorflow as tf
 from streamlit_drawable_canvas import st_canvas
 
 # -----------------------------------------------------------------------------
-# CONFIGURACIÓN
+# CONFIGURACIÓN GENERAL
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Reconocedor de Dígitos",
+    page_title="Reconocedor de Dígitos // Krov Industries",
     page_icon="▪",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
 # -----------------------------------------------------------------------------
-# ESTILOS NOIR, ANIMACIONES E INSTRUCCIONES VISUALES
+# ESTILOS VISUALES Y ANIMACIONES
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -33,19 +33,27 @@ st.markdown(
 
     #MainMenu, footer, header { visibility: hidden; }
 
-    /* Encabezado */
-    .title {
+    .brand-signature {
         text-align: center;
-        font-size: 1.5rem;
-        font-weight: 500;
-        letter-spacing: 0.15em;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: #fafafa;
-        margin-top: 1rem;
-        margin-bottom: 1.5rem;
+        color: #71717a;
+        margin-top: 0.5rem;
     }
 
-    /* Barra de instrucciones animada */
+    .title {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #fafafa;
+        margin-top: 0.2rem;
+        margin-bottom: 1.2rem;
+    }
+
     .guide-container {
         display: flex;
         justify-content: center;
@@ -70,10 +78,9 @@ st.markdown(
         letter-spacing: 0.02em;
     }
 
-    /* Animación del trazo continuo */
     .stroke-demo {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
     }
 
     .animated-digit {
@@ -89,7 +96,6 @@ st.markdown(
         100% { stroke-dashoffset: 100; opacity: 0.2; }
     }
 
-    /* Pulso animado para el botón */
     .pulse-btn-demo {
         width: 14px;
         height: 14px;
@@ -108,7 +114,6 @@ st.markdown(
         font-size: 0.85rem;
     }
 
-    /* Marco del lienzo (80% centrado) */
     .canvas-frame {
         background: #000000;
         border: 1px solid rgba(255, 255, 255, 0.12);
@@ -119,7 +124,7 @@ st.markdown(
 
     .canvas-frame:hover {
         border-color: rgba(255, 255, 255, 0.35);
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.03);
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.04);
     }
 
     div[data-testid="stCanvas"] {
@@ -127,7 +132,6 @@ st.markdown(
         justify-content: center;
     }
 
-    /* Botones */
     div.stButton > button {
         border-radius: 4px !important;
         font-family: 'JetBrains Mono', monospace !important;
@@ -161,7 +165,6 @@ st.markdown(
         border-color: rgba(255, 255, 255, 0.3) !important;
     }
 
-    /* Tarjetas de lectura de resultados */
     .stat-card {
         background: #111114;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -193,7 +196,6 @@ st.markdown(
     }
     </style>
 
-    <!-- Estela del cursor sutil -->
     <canvas id="trailCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:99999;"></canvas>
     
     <script>
@@ -265,7 +267,7 @@ def locate_weights():
 def load_network():
     files = locate_weights()
     if not files:
-        return None, None, "No se encontró ningún archivo de pesos (.h5 o .keras)."
+        return None, None, "No se encontró ningún archivo de pesos (.h5 o .keras) en el directorio."
 
     err_log = []
     for file_path in files:
@@ -279,7 +281,7 @@ def load_network():
             except Exception as e2:
                 err_log.append(f"{os.path.basename(file_path)}: {str(e1)}")
 
-    return None, None, "\\n".join(err_log)
+    return None, None, "\n".join(err_log)
 
 
 model, filename, load_err = load_network()
@@ -287,11 +289,11 @@ if model is None:
     st.cache_resource.clear()
 
 # -----------------------------------------------------------------------------
-# ENCABEZADO E INSTRUCCIONES ANIMADAS
+# ENCABEZADO E INSTRUCCIONES
 # -----------------------------------------------------------------------------
+st.markdown('<div class="brand-signature">Krov Industries · Visión Neuronal</div>', unsafe_allow_html=True)
 st.markdown('<div class="title">Reconocedor de Dígitos</div>', unsafe_allow_html=True)
 
-# Guía animada sin saturar con texto
 st.markdown(
     """
     <div class="guide-container">
@@ -299,7 +301,7 @@ st.markdown(
             <svg class="stroke-demo" viewBox="0 0 40 40" fill="none">
                 <path class="animated-digit" d="M 12 10 C 24 10, 24 20, 14 20 C 26 20, 26 32, 10 32" stroke="#fafafa" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            <span>Dibuja del 0 al 9</span>
+            <span>Dibuja un número del 0 al 9</span>
         </div>
         <div class="guide-arrow">→</div>
         <div class="guide-step">
@@ -312,7 +314,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# ÁREA DE DIBUJO (CENTRADA AL 80%)
+# ÁREA DE DIBUJO
 # -----------------------------------------------------------------------------
 _, col_center, _ = st.columns([1, 8, 1])
 
@@ -333,9 +335,9 @@ with col_center:
     st.write("")
     btn_l, btn_r = st.columns([3, 1])
     with btn_l:
-        run_btn = st.button("Analizar", type="primary", use_container_width=True)
+        run_btn = st.button("Analizar trazo", type="primary", use_container_width=True)
     with btn_r:
-        clear_btn = st.button("Limpiar", type="secondary", use_container_width=True)
+        clear_btn = st.button("Limpiar lienzo", type="secondary", use_container_width=True)
 
     if clear_btn:
         st.rerun()
@@ -344,7 +346,6 @@ with col_center:
 # PROCESAMIENTO E IDENTIFICACIÓN
 # -----------------------------------------------------------------------------
 def prepare_drawing(raw_matrix: np.ndarray):
-    """Enfoca el número dibujado, lo centra en un marco cuadrado y lo escala a 28x28."""
     img = Image.fromarray(raw_matrix.astype("uint8")).convert("L")
     box = img.getbbox()
     if not box:
@@ -362,14 +363,14 @@ def prepare_drawing(raw_matrix: np.ndarray):
 
 if run_btn:
     if model is None:
-        st.error(f"No fue posible cargar el modelo: {load_err}")
+        st.error(f"No fue posible cargar el modelo neuronal: {load_err}")
     elif canvas_data.image_data is None or np.max(canvas_data.image_data) == 0:
         st.warning("Dibuja un dígito en el panel antes de presionar Analizar.")
     else:
         with col_center:
             img_28, tensor = prepare_drawing(canvas_data.image_data)
             if tensor is None:
-                st.warning("No se detectó ningún trazo.")
+                st.warning("No se detectó ningún trazo en el lienzo.")
             else:
                 probs = model.predict(tensor, verbose=0)[0]
                 pred = int(np.argmax(probs))
@@ -379,7 +380,6 @@ if run_btn:
                 second_pred = int(ranked[1])
                 second_conf = float(probs[second_pred] * 100)
 
-                # Lecturas numéricas
                 st.write("")
                 c1, c2, c3 = st.columns(3)
                 with c1:
@@ -416,10 +416,9 @@ if run_btn:
                         unsafe_allow_html=True,
                     )
 
-                # Gráfica de distribución de probabilidad
                 st.write("")
                 st.markdown(
-                    "<p style='font-size:0.75rem; color:#71717a; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;'>Probabilidades</p>",
+                    "<p style='font-size:0.75rem; color:#71717a; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;'>Probabilidades calculadas por dígito</p>",
                     unsafe_allow_html=True,
                 )
                 chart_data = pd.DataFrame({
