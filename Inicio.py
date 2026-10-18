@@ -17,6 +17,12 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
+# CONTROL DE ESTADO DEL LIENZO
+# -----------------------------------------------------------------------------
+if "canvas_version" not in st.session_state:
+    st.session_state.canvas_version = 0
+
+# -----------------------------------------------------------------------------
 # ESTILOS VISUALES: LÁMPARA DE LAVA EN CSS Y CENTRADO AMPLIADO (700px)
 # -----------------------------------------------------------------------------
 st.markdown(
@@ -186,9 +192,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------
 # CARGA ROBUSTA MULTICAPA DEL MODELO NEURONAL
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------
 def locate_weights():
     search_dirs = [
         os.getcwd(),
@@ -302,7 +308,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# LIENZO CENTRADO Y AMPLIADO (700x380px)
+# LIENZO CENTRADO Y AMPLIADO CON KEY DINÁMICO (RESET GARANTIZADO)
 # -----------------------------------------------------------------------------
 canvas_data = st_canvas(
     fill_color="#000000",
@@ -312,7 +318,7 @@ canvas_data = st_canvas(
     width=700,
     height=380,
     drawing_mode="freedraw",
-    key="mnist_canvas_large",
+    key=f"mnist_canvas_v{st.session_state.canvas_version}",
 )
 
 st.write("")
@@ -323,6 +329,7 @@ with btn_col2:
     clear_btn = st.button("Limpiar", type="secondary", use_container_width=True)
 
 if clear_btn:
+    st.session_state.canvas_version += 1
     st.rerun()
 
 # -----------------------------------------------------------------------------
