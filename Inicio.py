@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import streamlit as st
+import streamlit.components.v1 as components
 import tensorflow as tf
 from streamlit_drawable_canvas import st_canvas
 
@@ -17,75 +18,22 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# ATMÓSFERA VISUAL: LÁMPARA DE LAVA EN CARBONO, ESTELAS Y ESTILOS
+# ATMÓSFERA VISUAL: TRANSPARENCIA Y ELIMINACIÓN DEL RECUADRO LATERAL
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-    html, body, [data-testid="stAppViewContainer"] {
-        background-color: #050508 !important;
+    html, body, [data-testid="stAppViewContainer"], .stApp, section.main {
+        background: transparent !important;
+        background-color: transparent !important;
         color: #f4f4f5 !important;
         font-family: 'Inter', -apple-system, sans-serif !important;
         overflow-x: hidden;
     }
 
     [data-testid="stHeader"] { background: transparent !important; }
-
-    /* 1. Malla continua de gradientes oscuros */
-    .stApp {
-        background: linear-gradient(135deg, #050508 0%, #0d0e14 30%, #151622 60%, #07070b 100%) !important;
-        background-size: 300% 300% !important;
-        animation: carbonShift 18s ease infinite alternate !important;
-    }
-
-    @keyframes carbonShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    /* 2. Esferas orgánicas fluidas de efecto lámpara de lava */
-    .carbon-blob-1 {
-        position: fixed;
-        top: 15%;
-        left: -120px;
-        width: 520px;
-        height: 520px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(161, 161, 170, 0.02) 60%, transparent 75%);
-        border-radius: 40% 60% 70% 30% / 50% 60% 40% 50%;
-        filter: blur(85px);
-        animation: carbonDrift1 22s infinite alternate ease-in-out;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .carbon-blob-2 {
-        position: fixed;
-        bottom: 5%;
-        right: -100px;
-        width: 560px;
-        height: 560px;
-        background: radial-gradient(circle, rgba(161, 161, 170, 0.07) 0%, rgba(255, 255, 255, 0.01) 60%, transparent 75%);
-        border-radius: 60% 40% 50% 50% / 40% 50% 60% 50%;
-        filter: blur(90px);
-        animation: carbonDrift2 25s infinite alternate ease-in-out;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    @keyframes carbonDrift1 {
-        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-        50% { transform: translate(120px, 70px) scale(1.15) rotate(180deg); }
-        100% { transform: translate(40px, 140px) scale(0.95) rotate(360deg); }
-    }
-
-    @keyframes carbonDrift2 {
-        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-        50% { transform: translate(-100px, -70px) scale(1.2) rotate(-180deg); }
-        100% { transform: translate(-30px, -120px) scale(0.9) rotate(-360deg); }
-    }
 
     .brand-signature {
         text-align: center;
@@ -99,7 +47,7 @@ st.markdown(
 
     .title {
         text-align: center;
-        font-size: 2rem;
+        font-size: 2.1rem;
         font-weight: 700;
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -109,19 +57,19 @@ st.markdown(
         text-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
     }
 
-    /* RESTAURACIÓN DEL NÚMERO 3 ANIMADO */
+    /* GUÍA VISUAL CON NÚMERO 3 ANIMADO RESTAURADO */
     .guide-chip {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 1.4rem;
         margin: 0 auto 1.4rem auto;
-        padding: 8px 20px;
+        padding: 8px 22px;
         background: rgba(13, 13, 18, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 8px;
         width: fit-content;
-        font-size: 0.82rem;
+        font-size: 0.85rem;
         color: #a1a1aa;
         backdrop-filter: blur(12px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
@@ -130,12 +78,14 @@ st.markdown(
     .stroke-demo {
         width: 34px;
         height: 34px;
+        display: inline-block;
+        vertical-align: middle;
     }
 
     .animated-digit-3 {
         stroke-dasharray: 100;
         stroke-dashoffset: 100;
-        animation: traceThree 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        animation: traceThree 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
     @keyframes traceThree {
@@ -145,40 +95,31 @@ st.markdown(
         100% { stroke-dashoffset: 100; opacity: 0.2; }
     }
 
-    /* CENTRADO PERFECTO DEL LIENZO SIN MARCOS ANIDADOS */
+    /* ELIMINACIÓN DE CONTENEDORES SECUNDARIOS Y CENTRADO EXACTO */
     div[data-testid="stCustomComponentV1"] {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         width: 100% !important;
-    }
-
-    div[data-testid="stCanvas"] {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        background: transparent !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-    }
-
-    div[data-testid="stCanvas"] > div {
-        margin: 0 auto !important;
         background: transparent !important;
     }
 
-    div[data-testid="stCanvas"] canvas {
+    /* El iframe ahora mide exactamente 600px igual que el canvas (sin espacios laterales) */
+    iframe[title*="st_canvas"], iframe[title*="drawable_canvas"] {
+        width: 600px !important;
+        height: 340px !important;
         margin: 0 auto !important;
-        border: 2px solid rgba(255, 255, 255, 0.25) !important;
-        border-radius: 10px !important;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 25px rgba(255, 255, 255, 0.05) !important;
-        background-color: #000000 !important;
+        display: block !important;
+        background: transparent !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 255, 255, 0.08) !important;
         transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
     }
 
-    div[data-testid="stCanvas"] canvas:hover {
+    iframe[title*="st_canvas"]:hover, iframe[title*="drawable_canvas"]:hover {
         border-color: #ffffff !important;
-        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.15) !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.2) !important;
     }
 
     div.stButton > button {
@@ -215,72 +156,129 @@ st.markdown(
         line-height: 1;
     }
     </style>
-
-    <div class="carbon-blob-1"></div>
-    <div class="carbon-blob-2"></div>
     """,
     unsafe_allow_html=True
 )
 
 # -----------------------------------------------------------------------------
-# ESTELA DE RATÓN REACTIVA
+# LÁMPARA DE LAVA FLUIDA INTERACTIVA Y SUPRESIÓN DEL FONDO DEL IFRAME
 # -----------------------------------------------------------------------------
-st.components.v1.html(
+components.html(
     """
     <script>
     (function() {
         const doc = window.parent.document;
-        if (!doc.getElementById('digit-sparkles-canvas')) {
-            const canvas = doc.createElement('canvas');
-            canvas.id = 'digit-sparkles-canvas';
-            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;opacity:0.65;';
+
+        // 1. Inyección de la simulación de Lámpara de Lava en Canvas
+        let canvas = doc.getElementById('digit-lava-canvas');
+        if (!canvas) {
+            canvas = doc.createElement('canvas');
+            canvas.id = 'digit-lava-canvas';
+            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;background:#050508;';
             doc.body.prepend(canvas);
-
-            const ctx = canvas.getContext('2d');
-            let w = canvas.width = window.parent.innerWidth;
-            let h = canvas.height = window.parent.innerHeight;
-
-            window.parent.addEventListener('resize', () => {
-                w = canvas.width = window.parent.innerWidth;
-                h = canvas.height = window.parent.innerHeight;
-            });
-
-            const particles = [];
-            window.parent.addEventListener('mousemove', (e) => {
-                for (let i = 0; i < 2; i++) {
-                    particles.push({
-                        x: e.clientX,
-                        y: e.clientY,
-                        r: Math.random() * 2 + 0.8,
-                        vx: (Math.random() - 0.5) * 1.5,
-                        vy: (Math.random() - 0.5) * 1.5,
-                        alpha: 1.0
-                    });
-                }
-            });
-
-            function loop() {
-                ctx.clearRect(0, 0, w, h);
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    const p = particles[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.alpha -= 0.025;
-                    if (p.alpha <= 0) {
-                        particles.splice(i, 1);
-                        continue;
-                    }
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                    ctx.shadowBlur = 8;
-                    ctx.shadowColor = '#ffffff';
-                    ctx.fill();
-                }
-                requestAnimationFrame(loop);
-            }
-            loop();
         }
+
+        const ctx = canvas.getContext('2d');
+        let w = canvas.width = window.parent.innerWidth;
+        let h = canvas.height = window.parent.innerHeight;
+
+        window.parent.addEventListener('resize', () => {
+            w = canvas.width = window.parent.innerWidth;
+            h = canvas.height = window.parent.innerHeight;
+        });
+
+        // Esferas de lámpara de lava con atracción y deformación fluida
+        const blobs = [
+            { x: w * 0.25, y: h * 0.3, r: 260, vx: 0.5, vy: 0.4, color: 'rgba(255, 255, 255, 0.08)' },
+            { x: w * 0.75, y: h * 0.35, r: 280, vx: -0.4, vy: 0.5, color: 'rgba(113, 113, 122, 0.07)' },
+            { x: w * 0.4, y: h * 0.75, r: 270, vx: 0.4, vy: -0.5, color: 'rgba(212, 212, 216, 0.07)' },
+            { x: w * 0.85, y: h * 0.8, r: 230, vx: -0.5, vy: -0.4, color: 'rgba(161, 161, 170, 0.06)' }
+        ];
+
+        let mouse = { x: -1000, y: -1000 };
+        const sparkles = [];
+
+        window.parent.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            for (let i = 0; i < 2; i++) {
+                sparkles.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    r: Math.random() * 2 + 0.8,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    alpha: 1.0
+                });
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = '#050508';
+            ctx.fillRect(0, 0, w, h);
+            ctx.globalCompositeOperation = 'screen';
+
+            for (let b of blobs) {
+                b.x += b.vx;
+                b.y += b.vy;
+
+                if (b.x < -100 || b.x > w + 100) b.vx *= -1;
+                if (b.y < -100 || b.y > h + 100) b.vy *= -1;
+
+                // Deformación suave hacia el mouse
+                const dm = Math.hypot(b.x - mouse.x, b.y - mouse.y);
+                if (dm < 280) {
+                    b.x += (mouse.x - b.x) * 0.008;
+                    b.y += (mouse.y - b.y) * 0.008;
+                }
+
+                const grad = ctx.createRadialGradient(b.x, b.y, b.r * 0.05, b.x, b.y, b.r);
+                grad.addColorStop(0, b.color);
+                grad.addColorStop(1, 'transparent');
+
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+            }
+
+            // Estela de partículas
+            for (let i = sparkles.length - 1; i >= 0; i--) {
+                const s = sparkles[i];
+                s.x += s.vx;
+                s.y += s.vy;
+                s.alpha -= 0.025;
+                if (s.alpha <= 0) {
+                    sparkles.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#ffffff';
+                ctx.fill();
+            }
+
+            ctx.globalCompositeOperation = 'source-over';
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 2. Eliminación garantizada del fondo del iframe de Fabric.js
+        setInterval(() => {
+            const iframes = doc.querySelectorAll('iframe');
+            iframes.forEach(f => {
+                try {
+                    const idoc = f.contentDocument || f.contentWindow.document;
+                    if (idoc && idoc.querySelector('.canvas-container')) {
+                        idoc.body.style.background = 'transparent';
+                        idoc.documentElement.style.background = 'transparent';
+                    }
+                } catch(e) {}
+            });
+        }, 150);
     })();
     </script>
     """,
@@ -324,13 +322,13 @@ st.markdown('<div class="brand-signature">Krov Industries · Reconocimiento Ópt
 st.markdown('<div class="title">Reconocedor de Dígitos</div>', unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# NÚMERO 3 ANIMADO COMO GUÍA VISUAL
+# GUÍA CON EL NÚMERO 3 ANIMADO RESTAURADO
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <div class="guide-chip">
-        <svg class="stroke-demo" viewBox="0 0 40 40" fill="none">
-            <path class="animated-digit-3" d="M 12 10 C 24 10, 24 20, 14 20 C 26 20, 26 32, 10 32" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        <svg class="stroke-demo" viewBox="0 0 40 40">
+            <path class="animated-digit-3" d="M 12 10 C 24 10, 24 20, 14 20 C 26 20, 26 32, 10 32" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
         </svg>
         <span>1. Dibuja un dígito centrado (0 al 9)</span>
         <span style="color:#52525b;">→</span>
@@ -341,9 +339,9 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# LIENZO CENTRADO SIN RECORTAR DIMENSIONES (580x330px)
+# LIENZO CENTRADO ALINEADO EXACTAMENTE CON SUS BOTONES (600x340px)
 # -----------------------------------------------------------------------------
-_, col_canvas, _ = st.columns([1, 4, 1])
+_, col_canvas, _ = st.columns([1, 4.2, 1])
 
 with col_canvas:
     canvas_data = st_canvas(
@@ -351,10 +349,10 @@ with col_canvas:
         stroke_width=20,
         stroke_color="#ffffff",
         background_color="#000000",
-        width=580,
-        height=330,
+        width=600,
+        height=340,
         drawing_mode="freedraw",
-        key="digit_canvas_v3",
+        key="digit_canvas_v4",
     )
 
     st.write("")
