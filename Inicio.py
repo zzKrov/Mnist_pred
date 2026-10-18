@@ -18,13 +18,14 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# ATMÓSFERA VISUAL: TRANSPARENCIA Y ELIMINACIÓN DEL RECUADRO LATERAL
+# ESTILOS VISUALES, LÁMPARA DE LAVA FLUIDA (GPU) Y CENTRADO EXACTO
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
+    /* 1. Transparencia de contenedores nativos para revelar la lámpara de lava */
     html, body, [data-testid="stAppViewContainer"], .stApp, section.main {
         background: transparent !important;
         background-color: transparent !important;
@@ -35,6 +36,95 @@ st.markdown(
 
     [data-testid="stHeader"] { background: transparent !important; }
 
+    /* Fondo base continuo */
+    body {
+        background-color: #050508 !important;
+    }
+
+    /* 2. Lámpara de lava fluida con aceleración por GPU (sin consumo de CPU) */
+    .lava-lamp-viewport {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .lava-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(75px);
+        opacity: 0.28;
+        will-change: transform;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+
+    .lava-orb-1 {
+        width: 480px;
+        height: 480px;
+        background: radial-gradient(circle, #00f0ff 0%, #3b82f6 50%, transparent 70%);
+        top: -8%;
+        left: 8%;
+        animation: floatOrb1 16s infinite alternate;
+    }
+
+    .lava-orb-2 {
+        width: 520px;
+        height: 520px;
+        background: radial-gradient(circle, #a855f7 0%, #ec4899 50%, transparent 70%);
+        top: 42%;
+        right: -6%;
+        animation: floatOrb2 20s infinite alternate;
+    }
+
+    .lava-orb-3 {
+        width: 460px;
+        height: 460px;
+        background: radial-gradient(circle, #38bdf8 0%, #6366f1 50%, transparent 70%);
+        bottom: -10%;
+        left: 18%;
+        animation: floatOrb3 18s infinite alternate;
+    }
+
+    .lava-orb-4 {
+        width: 440px;
+        height: 440px;
+        background: radial-gradient(circle, #d946ef 0%, #8b5cf6 50%, transparent 70%);
+        bottom: 25%;
+        right: 25%;
+        animation: floatOrb4 22s infinite alternate;
+    }
+
+    @keyframes floatOrb1 {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(100px, 60px, 0) scale(1.15); }
+        100% { transform: translate3d(30px, 120px, 0) scale(0.95); }
+    }
+
+    @keyframes floatOrb2 {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(-90px, -70px, 0) scale(1.2); }
+        100% { transform: translate3d(-20px, -110px, 0) scale(0.92); }
+    }
+
+    @keyframes floatOrb3 {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(80px, -80px, 0) scale(1.12); }
+        100% { transform: translate3d(-40px, -30px, 0) scale(0.98); }
+    }
+
+    @keyframes floatOrb4 {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(-80px, 50px, 0) scale(1.18); }
+        100% { transform: translate3d(40px, -60px, 0) scale(0.9); }
+    }
+
+    /* 3. Encabezado y tipografía */
     .brand-signature {
         text-align: center;
         font-family: 'JetBrains Mono', monospace;
@@ -47,25 +137,25 @@ st.markdown(
 
     .title {
         text-align: center;
-        font-size: 2.1rem;
+        font-size: 2.2rem;
         font-weight: 700;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
         color: #fafafa;
-        margin-top: 0.2rem;
+        margin-top: 0.1rem;
         margin-bottom: 0.8rem;
-        text-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
     }
 
-    /* GUÍA VISUAL CON NÚMERO 3 ANIMADO RESTAURADO */
+    /* 4. Guía con número 3 animado restaurado */
     .guide-chip {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 1.4rem;
         margin: 0 auto 1.4rem auto;
-        padding: 8px 22px;
-        background: rgba(13, 13, 18, 0.85);
+        padding: 8px 24px;
+        background: rgba(13, 14, 20, 0.82);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 8px;
         width: fit-content;
@@ -73,29 +163,32 @@ st.markdown(
         color: #a1a1aa;
         backdrop-filter: blur(12px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        position: relative;
+        z-index: 2;
     }
 
     .stroke-demo {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         display: inline-block;
         vertical-align: middle;
+        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.7));
     }
 
     .animated-digit-3 {
-        stroke-dasharray: 100;
-        stroke-dashoffset: 100;
-        animation: traceThree 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        stroke-dasharray: 120;
+        stroke-dashoffset: 120;
+        animation: traceDigitMotion 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
-    @keyframes traceThree {
-        0% { stroke-dashoffset: 100; opacity: 0.2; }
-        40% { stroke-dashoffset: 0; opacity: 1; }
-        80% { stroke-dashoffset: 0; opacity: 1; }
-        100% { stroke-dashoffset: 100; opacity: 0.2; }
+    @keyframes traceDigitMotion {
+        0% { stroke-dashoffset: 120; opacity: 0.2; }
+        45% { stroke-dashoffset: 0; opacity: 1; }
+        75% { stroke-dashoffset: 0; opacity: 1; }
+        100% { stroke-dashoffset: -120; opacity: 0.2; }
     }
 
-    /* ELIMINACIÓN DE CONTENEDORES SECUNDARIOS Y CENTRADO EXACTO */
+    /* 5. Centrado estricto y eliminación del recuadro lateral */
     div[data-testid="stCustomComponentV1"] {
         display: flex !important;
         justify-content: center !important;
@@ -104,7 +197,7 @@ st.markdown(
         background: transparent !important;
     }
 
-    /* El iframe ahora mide exactamente 600px igual que el canvas (sin espacios laterales) */
+    /* El iframe mide exactamente 600px, coincidiendo con el canvas sin espacio sobrante */
     iframe[title*="st_canvas"], iframe[title*="drawable_canvas"] {
         width: 600px !important;
         height: 340px !important;
@@ -113,172 +206,188 @@ st.markdown(
         background: transparent !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
         border-radius: 12px !important;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 240, 255, 0.12) !important;
         transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
     }
 
     iframe[title*="st_canvas"]:hover, iframe[title*="drawable_canvas"]:hover {
-        border-color: #ffffff !important;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.2) !important;
+        border-color: #00f0ff !important;
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 240, 255, 0.3) !important;
     }
 
-    div.stButton > button {
-        border-radius: 6px !important;
+    /* 6. Botones con estilos táctiles y de alto contraste */
+    div.stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #00f0ff 0%, #3b82f6 50%, #8b5cf6 100%) !important;
+        color: #030712 !important;
         font-family: 'JetBrains Mono', monospace !important;
-        font-size: 0.82rem !important;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
         letter-spacing: 0.08em !important;
-        text-transform: uppercase !important;
+        border: none !important;
+        border-radius: 6px !important;
         padding: 0.75rem 1.6rem !important;
+        box-shadow: 0 0 25px rgba(0, 240, 255, 0.45) !important;
         transition: all 0.25s ease !important;
     }
 
+    div.stButton > button[kind="primary"]:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 0 40px rgba(0, 240, 255, 0.75) !important;
+        color: #ffffff !important;
+    }
+
+    div.stButton > button[kind="secondary"] {
+        background: rgba(15, 17, 26, 0.85) !important;
+        color: #e4e4e7 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 6px !important;
+        padding: 0.75rem 1.6rem !important;
+        backdrop-filter: blur(10px) !important;
+        transition: all 0.25s ease !important;
+    }
+
+    div.stButton > button[kind="secondary"]:hover {
+        transform: translateY(-2px) !important;
+        border-color: #ffffff !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.2) !important;
+    }
+
+    /* Tarjetas de resultados */
     .stat-card {
-        background: rgba(13, 13, 18, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(13, 14, 22, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
         padding: 1.1rem;
         text-align: center;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        position: relative;
+        z-index: 2;
     }
     .stat-label {
         font-size: 0.72rem;
         font-family: 'JetBrains Mono', monospace;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #71717a;
+        color: #94a3b8;
     }
     .stat-val {
-        font-size: 2.5rem;
-        font-weight: 600;
+        font-size: 2.6rem;
+        font-weight: 700;
         color: #ffffff;
         margin: 2px 0;
         line-height: 1;
+        text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
     }
     </style>
+
+    <div class="lava-lamp-viewport">
+        <div class="lava-orb lava-orb-1"></div>
+        <div class="lava-orb lava-orb-2"></div>
+        <div class="lava-orb lava-orb-3"></div>
+        <div class="lava-orb lava-orb-4"></div>
+    </div>
     """,
     unsafe_allow_html=True
 )
 
 # -----------------------------------------------------------------------------
-# LÁMPARA DE LAVA FLUIDA INTERACTIVA Y SUPRESIÓN DEL FONDO DEL IFRAME
+# ESTELA DE PARTÍCULAS EFICIENTE (SIN DUPLICADOS NI FUGAS DE MEMORIA)
 # -----------------------------------------------------------------------------
 components.html(
     """
     <script>
     (function() {
-        const doc = window.parent.document;
+        const pWin = window.parent;
+        const pDoc = pWin.document;
 
-        // 1. Inyección de la simulación de Lámpara de Lava en Canvas
-        let canvas = doc.getElementById('digit-lava-canvas');
+        // Evita re-inicializaciones en recargas de Streamlit
+        if (pWin.__KROV_DIGIT_INITIALIZED__) return;
+        pWin.__KROV_DIGIT_INITIALIZED__ = true;
+
+        // Canvas de estela ligero
+        let canvas = pDoc.getElementById('krov-cursor-trail');
         if (!canvas) {
-            canvas = doc.createElement('canvas');
-            canvas.id = 'digit-lava-canvas';
-            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;background:#050508;';
-            doc.body.prepend(canvas);
+            canvas = pDoc.createElement('canvas');
+            canvas.id = 'krov-cursor-trail';
+            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;opacity:0.8;';
+            pDoc.body.prepend(canvas);
         }
 
         const ctx = canvas.getContext('2d');
-        let w = canvas.width = window.parent.innerWidth;
-        let h = canvas.height = window.parent.innerHeight;
+        let w = canvas.width = pWin.innerWidth;
+        let h = canvas.height = pWin.innerHeight;
 
-        window.parent.addEventListener('resize', () => {
-            w = canvas.width = window.parent.innerWidth;
-            h = canvas.height = window.parent.innerHeight;
+        pWin.addEventListener('resize', () => {
+            w = canvas.width = pWin.innerWidth;
+            h = canvas.height = pWin.innerHeight;
         });
 
-        // Esferas de lámpara de lava con atracción y deformación fluida
-        const blobs = [
-            { x: w * 0.25, y: h * 0.3, r: 260, vx: 0.5, vy: 0.4, color: 'rgba(255, 255, 255, 0.08)' },
-            { x: w * 0.75, y: h * 0.35, r: 280, vx: -0.4, vy: 0.5, color: 'rgba(113, 113, 122, 0.07)' },
-            { x: w * 0.4, y: h * 0.75, r: 270, vx: 0.4, vy: -0.5, color: 'rgba(212, 212, 216, 0.07)' },
-            { x: w * 0.85, y: h * 0.8, r: 230, vx: -0.5, vy: -0.4, color: 'rgba(161, 161, 170, 0.06)' }
-        ];
+        const particles = [];
+        let mouse = { x: -100, y: -100 };
 
-        let mouse = { x: -1000, y: -1000 };
-        const sparkles = [];
-
-        window.parent.addEventListener('mousemove', (e) => {
+        pWin.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
-            for (let i = 0; i < 2; i++) {
-                sparkles.push({
+            if (particles.length < 25) {
+                particles.push({
                     x: e.clientX,
                     y: e.clientY,
-                    r: Math.random() * 2 + 0.8,
-                    vx: (Math.random() - 0.5) * 1.5,
-                    vy: (Math.random() - 0.5) * 1.5,
+                    r: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 1.2,
+                    vy: (Math.random() - 0.5) * 1.2,
                     alpha: 1.0
                 });
             }
         });
 
-        function animate() {
+        function renderTrail() {
             ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = '#050508';
-            ctx.fillRect(0, 0, w, h);
-            ctx.globalCompositeOperation = 'screen';
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.035;
 
-            for (let b of blobs) {
-                b.x += b.vx;
-                b.y += b.vy;
-
-                if (b.x < -100 || b.x > w + 100) b.vx *= -1;
-                if (b.y < -100 || b.y > h + 100) b.vy *= -1;
-
-                // Deformación suave hacia el mouse
-                const dm = Math.hypot(b.x - mouse.x, b.y - mouse.y);
-                if (dm < 280) {
-                    b.x += (mouse.x - b.x) * 0.008;
-                    b.y += (mouse.y - b.y) * 0.008;
-                }
-
-                const grad = ctx.createRadialGradient(b.x, b.y, b.r * 0.05, b.x, b.y, b.r);
-                grad.addColorStop(0, b.color);
-                grad.addColorStop(1, 'transparent');
-
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                ctx.fillStyle = grad;
-                ctx.fill();
-            }
-
-            // Estela de partículas
-            for (let i = sparkles.length - 1; i >= 0; i--) {
-                const s = sparkles[i];
-                s.x += s.vx;
-                s.y += s.vy;
-                s.alpha -= 0.025;
-                if (s.alpha <= 0) {
-                    sparkles.splice(i, 1);
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
                     continue;
                 }
+
                 ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 240, 255, ${p.alpha})`;
                 ctx.shadowBlur = 8;
-                ctx.shadowColor = '#ffffff';
+                ctx.shadowColor = '#00f0ff';
                 ctx.fill();
             }
-
-            ctx.globalCompositeOperation = 'source-over';
-            requestAnimationFrame(animate);
+            requestAnimationFrame(renderTrail);
         }
-        animate();
+        renderTrail();
 
-        // 2. Eliminación garantizada del fondo del iframe de Fabric.js
-        setInterval(() => {
-            const iframes = doc.querySelectorAll('iframe');
+        // Elimina fondos residuales dentro de los iframes mediante MutationObserver
+        function stripIframeBg() {
+            const iframes = pDoc.querySelectorAll('iframe');
             iframes.forEach(f => {
                 try {
                     const idoc = f.contentDocument || f.contentWindow.document;
                     if (idoc && idoc.querySelector('.canvas-container')) {
                         idoc.body.style.background = 'transparent';
                         idoc.documentElement.style.background = 'transparent';
+                        const cc = idoc.querySelector('.canvas-container');
+                        if (cc) cc.style.margin = '0 auto';
                     }
                 } catch(e) {}
             });
-        }, 150);
+        }
+
+        const observer = new MutationObserver(stripIframeBg);
+        observer.observe(pDoc.body, { childList: true, subtree: true });
+        stripIframeBg();
     })();
     </script>
     """,
@@ -322,13 +431,13 @@ st.markdown('<div class="brand-signature">Krov Industries · Reconocimiento Ópt
 st.markdown('<div class="title">Reconocedor de Dígitos</div>', unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# GUÍA CON EL NÚMERO 3 ANIMADO RESTAURADO
+# GUÍA VISUAL CON NÚMERO 3 ANIMADO (SVG ROBUSTO)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <div class="guide-chip">
         <svg class="stroke-demo" viewBox="0 0 40 40">
-            <path class="animated-digit-3" d="M 12 10 C 24 10, 24 20, 14 20 C 26 20, 26 32, 10 32" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+            <path class="animated-digit-3" d="M 12 10 C 25 10, 25 19, 15 20 C 27 21, 27 32, 11 32" fill="none" stroke="#00f0ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span>1. Dibuja un dígito centrado (0 al 9)</span>
         <span style="color:#52525b;">→</span>
@@ -339,9 +448,9 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# LIENZO CENTRADO ALINEADO EXACTAMENTE CON SUS BOTONES (600x340px)
+# ÁREA DE TRABAJO CENTRADA CON ALINEACIÓN SIMÉTRICA (600px)
 # -----------------------------------------------------------------------------
-_, col_canvas, _ = st.columns([1, 4.2, 1])
+_, col_canvas, _ = st.columns([1.2, 2.3, 1.2])
 
 with col_canvas:
     canvas_data = st_canvas(
@@ -352,7 +461,7 @@ with col_canvas:
         width=600,
         height=340,
         drawing_mode="freedraw",
-        key="digit_canvas_v4",
+        key="digit_canvas_final",
     )
 
     st.write("")
@@ -403,11 +512,11 @@ if run_btn:
                 with res_col2:
                     st.markdown(f'<div class="stat-card"><div class="stat-label">Certeza</div><div class="stat-val">{conf:.0f}%</div></div>', unsafe_allow_html=True)
                 with res_col3:
-                    st.markdown(f'<div class="stat-card"><div class="stat-label">Segunda Opción</div><div class="stat-val">{second_pred} <span style="font-size:0.9rem; color:#71717a;">({second_conf:.0f}%)</span></div></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="stat-card"><div class="stat-label">Segunda Opción</div><div class="stat-val">{second_pred} <span style="font-size:0.9rem; color:#94a3b8;">({second_conf:.0f}%)</span></div></div>', unsafe_allow_html=True)
 
                 st.write("")
                 chart_data = pd.DataFrame({
                     "Dígito": [str(i) for i in range(10)],
                     "Probabilidad (%)": probs * 100,
                 }).set_index("Dígito")
-                st.bar_chart(chart_data, color="#fafafa", height=180)
+                st.bar_chart(chart_data, color="#00f0ff", height=180)
