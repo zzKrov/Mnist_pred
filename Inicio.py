@@ -17,14 +17,14 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# ESTILOS VISUALES, LÁMPARA DE LAVA EN CSS (SIN LAG) Y CENTRADO EXACTO
+# ESTILOS VISUALES: LÁMPARA DE LAVA EN CSS Y CENTRADO AMPLIADO (700px)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-    /* 1. Fondo fluido de lámpara de lava acelerado por GPU */
+    /* Fondo fluido acelerado por hardware (GPU) sin consumo de CPU */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #06070b !important;
         background-image:
@@ -47,10 +47,10 @@ st.markdown(
 
     [data-testid="stHeader"] { background: transparent !important; }
 
-    /* 2. Contenedor centrado: elimina el recuadro oscuro lateral y centra todo */
+    /* Contenedor ampliado calibrado exactamente para el lienzo de 700px */
     .block-container {
-        max-width: 640px !important;
-        padding-top: 2rem !important;
+        max-width: 760px !important;
+        padding-top: 1.8rem !important;
         padding-bottom: 3rem !important;
         margin: 0 auto !important;
     }
@@ -76,14 +76,14 @@ st.markdown(
         text-shadow: 0 0 25px rgba(0, 240, 255, 0.35);
     }
 
-    /* 3. Guía interactiva con el número 3 animado */
+    /* Guía interactiva con número 3 animado */
     .guide-box {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 12px;
         margin: 0 auto 1.4rem auto;
-        padding: 8px 20px;
+        padding: 8px 22px;
         background: rgba(14, 16, 24, 0.85);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 8px;
@@ -103,50 +103,52 @@ st.markdown(
         100% { stroke-dashoffset: 0; opacity: 1; }
     }
 
-    /* 4. Estilos y centrado del iframe de dibujo */
+    /* Iframe del lienzo ampliado sin recuadros laterales */
     iframe[title*="canvas"] {
+        width: 700px !important;
+        height: 380px !important;
         margin: 0 auto !important;
         display: block !important;
         border: 2px solid rgba(255, 255, 255, 0.25) !important;
-        border-radius: 10px !important;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.1) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 14px 45px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 240, 255, 0.12) !important;
         transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
     }
 
     iframe[title*="canvas"]:hover {
         border-color: #00f0ff !important;
-        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.3) !important;
+        box-shadow: 0 16px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 240, 255, 0.35) !important;
     }
 
-    /* 5. Botones táctiles de alta visibilidad */
+    /* Botones de acción alineados al ancho del lienzo */
     div.stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #00f0ff 0%, #7928ca 100%) !important;
         color: #ffffff !important;
         font-family: 'JetBrains Mono', monospace !important;
-        font-size: 0.85rem !important;
+        font-size: 0.88rem !important;
         font-weight: 700 !important;
         letter-spacing: 0.06em !important;
         border: none !important;
         border-radius: 6px !important;
-        padding: 0.75rem 1.4rem !important;
+        padding: 0.8rem 1.6rem !important;
         box-shadow: 0 0 20px rgba(0, 240, 255, 0.35) !important;
         transition: all 0.2s ease !important;
     }
 
     div.stButton > button[kind="primary"]:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 0 35px rgba(0, 240, 255, 0.6) !important;
+        box-shadow: 0 0 35px rgba(0, 240, 255, 0.65) !important;
     }
 
     div.stButton > button[kind="secondary"] {
         background: rgba(18, 20, 30, 0.85) !important;
         color: #e4e4e7 !important;
         font-family: 'JetBrains Mono', monospace !important;
-        font-size: 0.85rem !important;
+        font-size: 0.88rem !important;
         font-weight: 600 !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         border-radius: 6px !important;
-        padding: 0.75rem 1.4rem !important;
+        padding: 0.8rem 1.6rem !important;
         transition: all 0.2s ease !important;
     }
 
@@ -156,24 +158,23 @@ st.markdown(
         color: #ffffff !important;
     }
 
-    /* 6. Tarjetas de métricas */
     .stat-card {
         background: rgba(14, 16, 24, 0.85);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
-        padding: 1rem;
+        padding: 1.1rem;
         text-align: center;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
     }
     .stat-label {
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         font-family: 'JetBrains Mono', monospace;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #94a3b8;
     }
     .stat-val {
-        font-size: 2.4rem;
+        font-size: 2.5rem;
         font-weight: 700;
         color: #ffffff;
         margin: 2px 0;
@@ -186,10 +187,14 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# CARGA DEL MODELO NEURONAL
+# CARGA ROBUSTA MULTICAPA DEL MODELO NEURONAL
 # -----------------------------------------------------------------------------
 def locate_weights():
-    search_dirs = [os.getcwd(), os.path.dirname(os.path.abspath(__file__)) if "__file__" in locals() else "."]
+    search_dirs = [
+        os.getcwd(),
+        os.path.dirname(os.path.abspath(__file__)) if "__file__" in locals() else ".",
+        "/mount/src/mnist_pred",
+    ]
     matches = []
     for base in set(search_dirs):
         if not os.path.exists(base):
@@ -205,24 +210,79 @@ def locate_weights():
 def load_network():
     files = locate_weights()
     if not files:
-        return None, None, "No se encontró ningún archivo de pesos (.h5 o .keras)."
+        return None, None, "No se encontró ningún archivo de modelo (.h5 o .keras) en el directorio del proyecto."
+
+    err_details = []
     for fp in files:
-        if os.path.getsize(fp) < 2048:
+        if os.path.getsize(fp) < 100:
             continue
+        fname = os.path.basename(fp)
+
+        # 1. Compatibilidad nativa con modelos Keras 2 en TF 2.16+
         try:
-            return tf.keras.models.load_model(fp, compile=False), os.path.basename(fp), None
-        except Exception:
-            try:
-                return tf.keras.models.load_model(fp), os.path.basename(fp), None
-            except Exception:
-                pass
-    return None, None, "Error al inicializar la red neuronal."
+            import tf_keras
+            return tf_keras.models.load_model(fp, compile=False), fname, None
+        except Exception as e:
+            err_details.append(f"tf_keras: {e}")
+
+        # 2. Carga estándar con safe_mode desactivado
+        try:
+            return tf.keras.models.load_model(fp, compile=False, safe_mode=False), fname, None
+        except Exception as e:
+            err_details.append(f"safe_mode=False: {e}")
+
+        # 3. Carga directa sin compilar métricas
+        try:
+            return tf.keras.models.load_model(fp, compile=False), fname, None
+        except Exception as e:
+            err_details.append(f"compile=False: {e}")
+
+        # 4. Keras 3 independiente
+        try:
+            import keras
+            return keras.saving.load_model(fp, compile=False, safe_mode=False), fname, None
+        except Exception as e:
+            err_details.append(f"keras.saving: {e}")
+
+        # 5. Carga de pesos en arquitectura CNN canónica de MNIST
+        try:
+            cnn = tf.keras.Sequential([
+                tf.keras.layers.Input(shape=(28, 28, 1)),
+                tf.keras.layers.Conv2D(32, (3, 3), activation="relu"),
+                tf.keras.layers.MaxPooling2D((2, 2)),
+                tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+                tf.keras.layers.MaxPooling2D((2, 2)),
+                tf.keras.layers.Flatten(),
+                tf.keras.layers.Dropout(0.5),
+                tf.keras.layers.Dense(10, activation="softmax")
+            ])
+            cnn.load_weights(fp)
+            return cnn, fname, None
+        except Exception as e:
+            err_details.append(f"weights(CNN): {e}")
+
+        # 6. Carga de pesos en arquitectura MLP canónica de MNIST
+        try:
+            mlp = tf.keras.Sequential([
+                tf.keras.layers.Input(shape=(28, 28, 1)),
+                tf.keras.layers.Flatten(),
+                tf.keras.layers.Dense(128, activation="relu"),
+                tf.keras.layers.Dropout(0.2),
+                tf.keras.layers.Dense(10, activation="softmax")
+            ])
+            mlp.load_weights(fp)
+            return mlp, fname, None
+        except Exception as e:
+            err_details.append(f"weights(MLP): {e}")
+
+    last_error = err_details[-1] if err_details else "Incompatibilidad de deserialización."
+    return None, None, f"Error al inicializar la red neuronal ({last_error})"
 
 
 model, filename, load_err = load_network()
 
 # -----------------------------------------------------------------------------
-# ENCABEZADO Y GUÍA VISUAL CON NÚMERO 3 ANIMADO
+# ENCABEZADO Y GUÍA VISUAL
 # -----------------------------------------------------------------------------
 st.markdown('<div class="brand-signature">Krov Industries · Reconocimiento Óptico</div>', unsafe_allow_html=True)
 st.markdown('<div class="title">Reconocedor de Dígitos</div>', unsafe_allow_html=True)
@@ -230,29 +290,29 @@ st.markdown('<div class="title">Reconocedor de Dígitos</div>', unsafe_allow_htm
 st.markdown(
     """
     <div class="guide-box">
-        <svg width="30" height="30" viewBox="0 0 40 40" style="display:inline-block; vertical-align:middle;">
+        <svg width="32" height="32" viewBox="0 0 40 40" style="display:inline-block; vertical-align:middle;">
             <path class="animated-three-path" d="M 12 10 C 25 10, 25 19, 15 20 C 27 21, 27 32, 11 32" fill="none" stroke="#00f0ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span style="font-size: 0.85rem; color: #e4e4e7;">1. Dibuja un dígito centrado (0 al 9)</span>
+        <span style="font-size: 0.88rem; color: #e4e4e7;">1. Dibuja un dígito centrado (0 al 9)</span>
         <span style="color: #64748b;">→</span>
-        <span style="font-size: 0.85rem; color: #00f0ff;">2. Pulsa Analizar Trazo</span>
+        <span style="font-size: 0.88rem; color: #00f0ff;">2. Pulsa Analizar Trazo</span>
     </div>
     """,
     unsafe_allow_html=True
 )
 
 # -----------------------------------------------------------------------------
-# LIENZO CENTRADO Y SIMÉTRICO (540x320px)
+# LIENZO CENTRADO Y AMPLIADO (700x380px)
 # -----------------------------------------------------------------------------
 canvas_data = st_canvas(
     fill_color="#000000",
-    stroke_width=20,
+    stroke_width=24,
     stroke_color="#ffffff",
     background_color="#000000",
-    width=540,
-    height=320,
+    width=700,
+    height=380,
     drawing_mode="freedraw",
-    key="mnist_canvas_simple",
+    key="mnist_canvas_large",
 )
 
 st.write("")
