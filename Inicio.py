@@ -17,15 +17,15 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# LÍNEA BASE VISUAL: GRADIENTES DE CARBONO, FLUIDOS Y TRAZO ANIMADO DEL "3"
+# ATMÓSFERA VISUAL: LÁMPARA DE LAVA EN CARBONO, ESTELAS Y ESTILOS
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"] {
-        background-color: #050507 !important;
+        background-color: #050508 !important;
         color: #f4f4f5 !important;
         font-family: 'Inter', -apple-system, sans-serif !important;
         overflow-x: hidden;
@@ -33,9 +33,9 @@ st.markdown(
 
     [data-testid="stHeader"] { background: transparent !important; }
 
-    /* 1. Fondo de gradiente continuo de carbono */
+    /* 1. Malla continua de gradientes oscuros */
     .stApp {
-        background: linear-gradient(135deg, #050507 0%, #0d0d12 30%, #15151c 60%, #060608 100%) !important;
+        background: linear-gradient(135deg, #050508 0%, #0d0e14 30%, #151622 60%, #07070b 100%) !important;
         background-size: 300% 300% !important;
         animation: carbonShift 18s ease infinite alternate !important;
     }
@@ -46,14 +46,14 @@ st.markdown(
         100% { background-position: 0% 50%; }
     }
 
-    /* 2. Esferas orgánicas fluidas de tono platino */
-    .fluid-carbon-1 {
+    /* 2. Esferas orgánicas fluidas de efecto lámpara de lava */
+    .carbon-blob-1 {
         position: fixed;
         top: 15%;
         left: -120px;
         width: 520px;
         height: 520px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(113, 113, 122, 0.03) 60%, transparent 75%);
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(161, 161, 170, 0.02) 60%, transparent 75%);
         border-radius: 40% 60% 70% 30% / 50% 60% 40% 50%;
         filter: blur(85px);
         animation: carbonDrift1 22s infinite alternate ease-in-out;
@@ -61,13 +61,13 @@ st.markdown(
         z-index: 0;
     }
 
-    .fluid-carbon-2 {
+    .carbon-blob-2 {
         position: fixed;
         bottom: 5%;
         right: -100px;
         width: 560px;
         height: 560px;
-        background: radial-gradient(circle, rgba(161, 161, 170, 0.06) 0%, rgba(255, 255, 255, 0.02) 60%, transparent 75%);
+        background: radial-gradient(circle, rgba(161, 161, 170, 0.07) 0%, rgba(255, 255, 255, 0.01) 60%, transparent 75%);
         border-radius: 60% 40% 50% 50% / 40% 50% 60% 50%;
         filter: blur(90px);
         animation: carbonDrift2 25s infinite alternate ease-in-out;
@@ -76,15 +76,15 @@ st.markdown(
     }
 
     @keyframes carbonDrift1 {
-        0% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(120px, 70px) scale(1.15); }
-        100% { transform: translate(40px, 140px) scale(0.95); }
+        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        50% { transform: translate(120px, 70px) scale(1.15) rotate(180deg); }
+        100% { transform: translate(40px, 140px) scale(0.95) rotate(360deg); }
     }
 
     @keyframes carbonDrift2 {
-        0% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(-100px, -70px) scale(1.2); }
-        100% { transform: translate(-30px, -120px) scale(0.9); }
+        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        50% { transform: translate(-100px, -70px) scale(1.2) rotate(-180deg); }
+        100% { transform: translate(-30px, -120px) scale(0.9) rotate(-360deg); }
     }
 
     .brand-signature {
@@ -99,14 +99,14 @@ st.markdown(
 
     .title {
         text-align: center;
-        font-size: 1.8rem;
-        font-weight: 600;
-        letter-spacing: 0.08em;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         color: #fafafa;
         margin-top: 0.2rem;
         margin-bottom: 0.8rem;
-        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        text-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
     }
 
     /* RESTAURACIÓN DEL NÚMERO 3 ANIMADO */
@@ -114,21 +114,22 @@ st.markdown(
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 1.5rem;
+        gap: 1.4rem;
         margin: 0 auto 1.4rem auto;
-        padding: 8px 18px;
-        background: rgba(13, 13, 16, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
+        padding: 8px 20px;
+        background: rgba(13, 13, 18, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
         width: fit-content;
         font-size: 0.82rem;
         color: #a1a1aa;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
     }
 
     .stroke-demo {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
     }
 
     .animated-digit-3 {
@@ -145,12 +146,20 @@ st.markdown(
     }
 
     /* CENTRADO PERFECTO DEL LIENZO SIN MARCOS ANIDADOS */
+    div[data-testid="stCustomComponentV1"] {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+
     div[data-testid="stCanvas"] {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         background: transparent !important;
         margin: 0 auto !important;
+        width: 100% !important;
     }
 
     div[data-testid="stCanvas"] > div {
@@ -159,56 +168,124 @@ st.markdown(
     }
 
     div[data-testid="stCanvas"] canvas {
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 8px !important;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.95), 0 0 25px rgba(255, 255, 255, 0.06) !important;
+        margin: 0 auto !important;
+        border: 2px solid rgba(255, 255, 255, 0.25) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 25px rgba(255, 255, 255, 0.05) !important;
         background-color: #000000 !important;
-        transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
     }
 
     div[data-testid="stCanvas"] canvas:hover {
-        border-color: rgba(255, 255, 255, 0.6) !important;
-        box-shadow: 0 12px 45px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.12) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.15) !important;
     }
 
     div.stButton > button {
-        border-radius: 4px !important;
+        border-radius: 6px !important;
         font-family: 'JetBrains Mono', monospace !important;
         font-size: 0.82rem !important;
         letter-spacing: 0.08em !important;
         text-transform: uppercase !important;
-        padding: 0.7rem 1.4rem !important;
-        transition: all 0.2s ease !important;
+        padding: 0.75rem 1.6rem !important;
+        transition: all 0.25s ease !important;
     }
 
     .stat-card {
-        background: rgba(13, 13, 17, 0.85);
+        background: rgba(13, 13, 18, 0.85);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
-        padding: 1rem;
+        border-radius: 8px;
+        padding: 1.1rem;
         text-align: center;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
     }
     .stat-label {
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         font-family: 'JetBrains Mono', monospace;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #71717a;
     }
     .stat-val {
-        font-size: 2.4rem;
-        font-weight: 500;
+        font-size: 2.5rem;
+        font-weight: 600;
         color: #ffffff;
         margin: 2px 0;
         line-height: 1;
     }
     </style>
 
-    <div class="fluid-carbon-1"></div>
-    <div class="fluid-carbon-2"></div>
+    <div class="carbon-blob-1"></div>
+    <div class="carbon-blob-2"></div>
     """,
     unsafe_allow_html=True
+)
+
+# -----------------------------------------------------------------------------
+# ESTELA DE RATÓN REACTIVA
+# -----------------------------------------------------------------------------
+st.components.v1.html(
+    """
+    <script>
+    (function() {
+        const doc = window.parent.document;
+        if (!doc.getElementById('digit-sparkles-canvas')) {
+            const canvas = doc.createElement('canvas');
+            canvas.id = 'digit-sparkles-canvas';
+            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;opacity:0.65;';
+            doc.body.prepend(canvas);
+
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.parent.innerWidth;
+            let h = canvas.height = window.parent.innerHeight;
+
+            window.parent.addEventListener('resize', () => {
+                w = canvas.width = window.parent.innerWidth;
+                h = canvas.height = window.parent.innerHeight;
+            });
+
+            const particles = [];
+            window.parent.addEventListener('mousemove', (e) => {
+                for (let i = 0; i < 2; i++) {
+                    particles.push({
+                        x: e.clientX,
+                        y: e.clientY,
+                        r: Math.random() * 2 + 0.8,
+                        vx: (Math.random() - 0.5) * 1.5,
+                        vy: (Math.random() - 0.5) * 1.5,
+                        alpha: 1.0
+                    });
+                }
+            });
+
+            function loop() {
+                ctx.clearRect(0, 0, w, h);
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.025;
+                    if (p.alpha <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#ffffff';
+                    ctx.fill();
+                }
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+    })();
+    </script>
+    """,
+    height=0,
+    width=0
 )
 
 # -----------------------------------------------------------------------------
@@ -239,7 +316,7 @@ def load_network():
                 return tf.keras.models.load_model(fp), os.path.basename(fp), None
             except Exception:
                 pass
-    return None, None, "Error al cargar la red neuronal."
+    return None, None, "Error al inicializar la red neuronal."
 
 model, filename, load_err = load_network()
 
@@ -256,7 +333,7 @@ st.markdown(
             <path class="animated-digit-3" d="M 12 10 C 24 10, 24 20, 14 20 C 26 20, 26 32, 10 32" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
         <span>1. Dibuja un dígito centrado (0 al 9)</span>
-        <span style="color:#3f3f46;">→</span>
+        <span style="color:#52525b;">→</span>
         <span>2. Pulsa Analizar Trazo</span>
     </div>
     """,
@@ -264,9 +341,9 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# LIENZO CENTRADO SIN RECORTAR DIMENSIONES (640x340px)
+# LIENZO CENTRADO SIN RECORTAR DIMENSIONES (580x330px)
 # -----------------------------------------------------------------------------
-_, col_canvas, _ = st.columns([1, 4.5, 1])
+_, col_canvas, _ = st.columns([1, 4, 1])
 
 with col_canvas:
     canvas_data = st_canvas(
@@ -274,10 +351,10 @@ with col_canvas:
         stroke_width=20,
         stroke_color="#ffffff",
         background_color="#000000",
-        width=640,
-        height=340,
+        width=580,
+        height=330,
         drawing_mode="freedraw",
-        key="digit_canvas",
+        key="digit_canvas_v3",
     )
 
     st.write("")
